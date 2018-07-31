@@ -16,8 +16,8 @@ $ python3 do_to_ssh_config.py production
 
 ## Features
 
-* Supports different ssh keys for each droplet, depending on the DO tags it uses
-* Work with different configurations to write in different sections of your ssh config
+* Supports different ssh keys for each droplet, depending on the DO tags of the droplet
+* Works with different configurations and can write in different sections of your ssh config
 
 ## How to
 
@@ -26,7 +26,7 @@ Save this at `~/.config/do_to_ssh_config/<name>.json`, where `<name>` is how you
 
 ```json
 {
-    "token": "DO_READ_ONLY_TOKEN_HERE",
+    "token": "DIGITAL_OCEAN_READ_ONLY_TOKEN_HERE",
     "keys": {
         "tagToKey": {
         },
@@ -40,7 +40,7 @@ Save this at `~/.config/do_to_ssh_config/<name>.json`, where `<name>` is how you
     "hostPrefix": "do-prod-"
 }
 ```
-*Note*: This is the simplest possible configuration file, for more options, read on.
+*Note*: This is the simplest possible configuration file that uses the same key for every droplet and the droplet name as `Host`, for more options, read on.
 
 1. Generate a new personal DO API read-only access token [here](https://cloud.digitalocean.com/account/api/tokens)
 2. `hostPrefix` is what prefix to add in the `Host` key in your ssh config for each droplet loaded through this configuration, can be anything you want
@@ -112,7 +112,7 @@ The final config will look like this:
 
 ```json
 {
-    "token": "DO_READ_ONLY_TOKEN_HERE",
+    "token": "DIGITAL_OCEAN_READ_ONLY_TOKEN_HERE",
     "keys": {
         "tagToKey": {
             "control-center": {
