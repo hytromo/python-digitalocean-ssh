@@ -41,14 +41,14 @@ def parse_ssh_config(config):
     print('· Parsing', ssh_config_path)
 
     with open(ssh_config_path, 'r') as file:
-        indexNumber = 0
+        index_number = 0
         for line in file:
             config_lines.append(line)
             if line.strip() == config.get('startMark'):
-                marks['start'] = indexNumber
+                marks['start'] = index_number
             elif line.strip() == config.get('endMark'):
-                marks['end'] = indexNumber
-            indexNumber += 1
+                marks['end'] = index_number
+            index_number += 1
 
     if (marks.get('start') is None or marks.get('end') is None):
         error('Start and/or end markings missing, add',
@@ -67,39 +67,39 @@ def parse_ssh_config(config):
 def fetch_droplets(config):
     print('· Fetching droplets from DO')
 
-    doManager = digitalocean.Manager(
+    do_manager = digitalocean.Manager(
         token=config.get('token'))
-    tagToSshKey = config.get('keys').get('tagToKey')
-    defaultKey = config.get('keys').get('default')
+    tag_to_ssh_key = config.get('keys').get('tagToKey')
+    default_key = config.get('keys').get('default')
 
-    insertedNameToCount = {}
+    inserted_name_to_count = {}
     droplets = []
-    for droplet in doManager.get_all_droplets():
-        selectedKey = None
-        hostName = None
+    for droplet in do_manager.get_all_droplets():
+        selected_key = None
+        hostname = None
         for tag in droplet.tags:
-            if tag in tagToSshKey:
-                thisKey = tagToSshKey.get(tag)
-                if selectedKey is None or thisKey.get('priority') > selectedKey.get('priority'):
-                    selectedKey = thisKey
-                    hostName = tag  # best case scenario
+            if tag in tag_to_ssh_key:
+                thisKey = tag_to_ssh_key.get(tag)
+                if selected_key is None or thisKey.get('priority') > selected_key.get('priority'):
+                    selected_key = thisKey
+                    hostname = tag  # best case scenario
 
-        if selectedKey is None:
-            selectedKey = defaultKey
+        if selected_key is None:
+            selected_key = default_key
 
-        if hostName is None:
-            hostName = droplet.name  # worst case scenario
+        if hostname is None:
+            hostname = droplet.name  # worst case scenario
 
-        if hostName in insertedNameToCount:
-            insertedNameToCount[hostName] += 1
+        if hostname in inserted_name_to_count:
+            inserted_name_to_count[hostname] += 1
         else:
-            insertedNameToCount[hostName] = 1
+            inserted_name_to_count[hostname] = 1
 
         droplets.append({
-            'host': config.get('hostPrefix') + (hostName + str(('' if insertedNameToCount[hostName] is 1 else insertedNameToCount[hostName]))),
+            'host': config.get('hostPrefix') + (hostname + str(('' if inserted_name_to_count[hostname] is 1 else inserted_name_to_count[hostname]))),
             'name': droplet.name,
             'ip': droplet.ip_address,
-            'identityFile': '~/.ssh/' + selectedKey.get('key')
+            'identityFile': '~/.ssh/' + selected_key.get('key')
         })
 
     return sorted(droplets, key=functools.cmp_to_key(lambda a, b: 1 if a.get('host') > b.get('host') else -1))
@@ -108,21 +108,21 @@ def fetch_droplets(config):
 def write_to_ssh_config(droplets, ssh_config):
     print('· Writing into your ssh config file')
 
-    def addLine(insertIndex, line):
-        config_lines.insert(insertIndex, line)
+    def add_line(insert_index, line):
+        config_lines.insert(insert_index, line)
 
-    insertIndex = ssh_config.get('marks').get('start')
+    insert_index = ssh_config.get('marks').get('start')
     config_lines = ssh_config.get('lines')
     for droplet in droplets:
 
-        addLine(insertIndex + 1, 'Host ' + droplet.get('host') + '\n')
-        addLine(insertIndex + 2, '    # ' + droplet.get('name') + '\n')
-        addLine(insertIndex + 3, '    Hostname ' + droplet.get('ip') + '\n')
-        addLine(insertIndex + 4, '    IdentityFile ' +
+        add_line(insert_index + 1, 'Host ' + droplet.get('host') + '\n')
+        add_line(insert_index + 2, '    # ' + droplet.get('name') + '\n')
+        add_line(insert_index + 3, '    Hostname ' + droplet.get('ip') + '\n')
+        add_line(insert_index + 4, '    IdentityFile ' +
                 droplet.get('identityFile') + '\n')
-        addLine(insertIndex + 5, '    User user\n')
+        add_line(insert_index + 5, '    User user\n')
 
-        insertIndex += 5
+        insert_index += 5
 
     with open(get_ssh_config_path(), 'w') as file:
         file.writelines(config_lines)
