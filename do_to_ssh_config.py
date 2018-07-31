@@ -138,4 +138,4 @@ if __name__ == '__main__':
 
     print()
     print('✓ Done,', len(droplets), 'droplet' +
-          ('' if len(droplets) is 1 else 's') + ' added')
+          ('' if len(droplets) is 1 else 's') + ' synced')
