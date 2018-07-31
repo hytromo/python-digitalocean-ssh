@@ -12,7 +12,7 @@ $ python3 do_to_ssh_config.py production
 · Fetching droplets from DO
 · Writing into your ssh config file
 
-✓ Done, 11 droplets added
+✓ Done, 11 droplets synced
 ```
 
 ## Features
@@ -69,7 +69,7 @@ $ python3 do_to_ssh_config.py production
 · Fetching droplets from DO
 · Writing into your ssh config file
 
-✓ Done, 11 droplets added
+✓ Done, 11 droplets synced
 ```
 
 Now your ssh config will look like this:
