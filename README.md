@@ -167,7 +167,7 @@ This is convenient for large environments where the droplet names are autogenera
 
 ## I have production *and* testing and I work in 10 different companies!
 
-Simply create different configurations files under `~/.config/do_to_ssh_config/`, one for each use case of yours, like `production.json` and `testing.json`.
+Simply create different configuration files under `~/.config/do_to_ssh_config/`, one for each use case of yours, like `production.json` and `testing.json`. It will be useful to have a different `hostPrefix` for each use case.
 
 Also, add the different markings in your ssh config file, e.g.:
 
