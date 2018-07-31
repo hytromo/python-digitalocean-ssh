@@ -54,6 +54,10 @@ The above json configuration contains the `startMark` and `endMark`. These shoul
 
 Between these 2 marks the script will **delete** everything and add the new entries. Be careful not to add your own hosts between these 2 marks.
 
+<p align="center">
+  <img width="460" height="300" src="https://media.giphy.com/media/l0HUldzuCa0S16SkM/giphy.gif">
+</p>
+
 ### Step 3: Run the script
 
 ```bash
