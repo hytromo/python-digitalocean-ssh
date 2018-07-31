@@ -6,6 +6,7 @@ This python 3 script will help you keep your ssh config in sync with your digita
 
 ```bash
 $ python3 do_to_ssh_config.py production
+
 · Reading /home/alex/.config/do_to_ssh_config/production.json
 · Parsing /home/alex/.ssh/config
 · Fetching droplets from DO
@@ -62,6 +63,7 @@ Between these 2 marks the script will **delete** everything and add the new entr
 
 ```bash
 $ python3 do_to_ssh_config.py production
+
 · Reading /home/alex/.config/do_to_ssh_config/production.json
 · Parsing /home/alex/.ssh/config
 · Fetching droplets from DO
@@ -168,6 +170,14 @@ This is convenient for large environments where the droplet names are autogenera
 *Note*: The droplet name is still visible as a comment in the first line of each entry
 
 *Note*: As shown in the above example, if 2 or more droplets share the same tag, an ascending number is appended to the `Host` value.
+
+Now you can see everything easily using ssh's tab completion, and connect anywhere:
+```
+$ ssh do-prod- <hit TAB key twice>
+
+do-prod-control-center   do-prod-mongodb  do-prod-load-balancer    do-prod-nodejs2          do-prod-postgres-slave   do-prod-blog
+do-prod-control-center2  do-prod-landing-page     do-prod-nodejs           do-prod-postgres-master  do-prod-redis            
+```
 
 ## I have production *and* testing and I work in 10 different companies!
 
