@@ -119,7 +119,7 @@ def write_to_ssh_config(droplets, ssh_config):
         add_line(insert_index + 2, '    # ' + droplet.get('name') + '\n')
         add_line(insert_index + 3, '    Hostname ' + droplet.get('ip') + '\n')
         add_line(insert_index + 4, '    IdentityFile ' +
-                droplet.get('identityFile') + '\n')
+                 droplet.get('identityFile') + '\n')
         add_line(insert_index + 5, '    User user\n')
 
         insert_index += 5
@@ -129,6 +129,8 @@ def write_to_ssh_config(droplets, ssh_config):
 
 
 if __name__ == '__main__':
+    print()
+
     config = get_config()
 
     ssh_config = parse_ssh_config(config)
