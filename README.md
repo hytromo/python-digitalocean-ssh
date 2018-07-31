@@ -183,11 +183,11 @@ Now if you run
 ```bash
 $ python3 do_to_ssh_config.py production
 ```
-it will go on and read from production.json and write in the corresponding marking inside your ssh config. And if you run
+it will go on and read from `production.json` and write in the corresponding marking inside your ssh config. And if you run
 ```bash
 $ python3 do_to_ssh_config.py testing
 ```
-it will go on and read from testing.json and write in the corresponding marking.
+it will go on and read from `testing.json` and write in the corresponding marking.
 
 
 ## Can I safely re-run the script any times I want?
