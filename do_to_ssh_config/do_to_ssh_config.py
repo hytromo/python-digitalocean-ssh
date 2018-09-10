@@ -6,21 +6,28 @@ import json
 import os.path
 import functools
 
+is_main = (__name__ == '__main__')
 
 def error(*msg):
-    print('Error:', *msg)
-    sys.exit(1)
+    messages = msg[:-1]
+
+    if is_main:
+        print('Error:', *messages)
+        sys.exit(1)
+    else:
+        error_type = msg[-1:][0]
+        raise error_type(' '.join(messages))
+
+def printIfMain(*msg):
+    if is_main:
+        print(*msg)
 
 
-def get_config():
-    if len(sys.argv) != 2:
-        error('please provide the configuration file name (e.g. production)')
-
-    config_type = sys.argv[1]
+def get_config(config_type):
     config_file_location = os.path.join(
         os.path.expanduser('~'), '.config', 'do_to_ssh_config', config_type + '.json')
 
-    print('· Reading', config_file_location)
+    printIfMain('· Reading', config_file_location)
 
     with open(config_file_location, 'r') as f:
         config = json.load(f)
@@ -38,7 +45,7 @@ def parse_ssh_config(config):
     # find the mark position
     ssh_config_path = get_ssh_config_path()
 
-    print('· Parsing', ssh_config_path)
+    printIfMain('· Parsing', ssh_config_path)
 
     with open(ssh_config_path, 'r') as file:
         index_number = 0
@@ -52,10 +59,10 @@ def parse_ssh_config(config):
 
     if (marks.get('start') is None or marks.get('end') is None):
         error('Start and/or end markings missing, add',
-              config.get('startMark'), 'and', config.get('endMark'), 'in your ssh config')
+              config.get('startMark'), 'and', config.get('endMark'), 'in your ssh config', LookupError)
 
     if (marks.get('start') > marks.get('end')):
-        error(config.get('startMark'), 'should come before', config.get('endMark'))
+        error(config.get('startMark'), 'should come before', config.get('endMark'), LookupError)
 
     # delete the lines between the marks
     for i in reversed(range(marks.get('start') + 1, marks.get('end'))):
@@ -65,7 +72,7 @@ def parse_ssh_config(config):
 
 
 def fetch_droplets(config):
-    print('· Fetching droplets from DO')
+    printIfMain('· Fetching droplets from DO')
 
     do_manager = digitalocean.Manager(
         token=config.get('token'))
@@ -99,6 +106,7 @@ def fetch_droplets(config):
             'host': config.get('hostPrefix') + (hostname + str(('' if inserted_name_to_count[hostname] is 1 else inserted_name_to_count[hostname]))),
             'name': droplet.name,
             'ip': droplet.ip_address,
+            'tags': droplet.tags,
             'identityFile': '~/.ssh/' + selected_key.get('key')
         })
 
@@ -106,7 +114,7 @@ def fetch_droplets(config):
 
 
 def write_to_ssh_config(droplets, ssh_config):
-    print('· Writing into your ssh config file')
+    printIfMain('· Writing into your ssh config file')
 
     def add_line(insert_index, line):
         config_lines.insert(insert_index, line)
@@ -128,16 +136,21 @@ def write_to_ssh_config(droplets, ssh_config):
         file.writelines(config_lines)
 
 
-if __name__ == '__main__':
-    print()
+if is_main:
+    printIfMain()
 
-    config = get_config()
+    if len(sys.argv) != 2:
+        error('please provide the configuration file name (e.g. production)', Exception)
+
+    config_type = sys.argv[1]
+
+    config = get_config(config_type)
 
     ssh_config = parse_ssh_config(config)
     droplets = fetch_droplets(config)
 
     write_to_ssh_config(droplets, ssh_config)
 
-    print()
-    print('✓ Done,', len(droplets), 'droplet' +
+    printIfMain()
+    printIfMain('✓ Done,', len(droplets), 'droplet' +
           ('' if len(droplets) is 1 else 's') + ' synced')
