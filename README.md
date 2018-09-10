@@ -23,6 +23,7 @@ $ python3 -m digitalocean_ssh production
 
 * Supports different ssh keys for each droplet, depending on the DO tags of the droplet
 * Works with different configurations and can write in different sections of your ssh config
+* Can be used as a module that combines DO and SSH information
 
 ## How to
 
