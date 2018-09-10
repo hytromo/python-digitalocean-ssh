@@ -4,8 +4,8 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='do_to_ssh_config',
-    version='0.0.4',
+    name='python-digitalocean-ssh',
+    version='0.0.8',
     author='Alexandros Solanos',
     author_email='solanosalex@gmail.com',
     description='Combine DO droplets with your ssh configuration',
